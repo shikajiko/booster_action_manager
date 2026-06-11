@@ -12,8 +12,16 @@ public:
     void send_goal(const ActionTrajectory & action);
 
 private:
+    rclcpp::Node node;
     rclcpp_action<ActionTrajectoryRos> client;
 };
+
+TrajectoryClient::TrajectoryClient(rclcpp::Node & node)
+{
+    this.node = node;
+    client = rclcpp_action::create_client<ActionTrajectoryRos>(
+        this, "controller/run_trajectory");
+}
 
 void TrajectoryClient::send_goal(ActionTrajectory & action) 
 {
