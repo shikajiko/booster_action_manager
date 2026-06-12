@@ -29,6 +29,26 @@ std::map<std::string, ActionTrajectory> Parser::get_action_list_from_dir(const s
     return action_list;
 }
 
+ActionTrajectory Parser::parse_string_json(const std::string & action_json)
+{
+    try {
+        nlohmann::json parsed = nlohmann::json::parse(action_json);
+
+        if (parsed.empty() || !parsed.is_object()) {
+            throw std::invalid_argument("JSON must be a non-empty object");
+        }
+
+        auto it = parsed.begin();
+        const std::string action_name = it.key();
+        const nlohmann::json & action_data = it.value();
+
+        return parse_action_json(action_data, action_name);
+
+    } catch (const nlohmann::json::parse_error & e) {
+        throw std::invalid_argument(std::string("Invalid JSON string: ") + e.what());
+    }
+}
+
 ActionTrajectory Parser::parse_action_json(const nlohmann::json & action_data, const std::string & action_name)
 {
     ActionTrajectory new_action;

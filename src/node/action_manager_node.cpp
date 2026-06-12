@@ -2,6 +2,7 @@
 #include "action_manager/action_manager.hpp"
 #include "action_interface/msg/run_action.hpp"
 #include "action_manager/trajectory_client.hpp"
+#include "action_manager/trajectory_structs.hpp"
 
 class ActionManagerNode 
 {
@@ -22,7 +23,7 @@ ActionManagerNode::ActionManagerNode(rclcpp::Node SharedPtr & node) : node();
         "/run_action",
         10,
         [this](const action_interface::msg::RunAction & msg) {
-            handle_action_request(msg);
+            this->handle_action_request(msg);
         }
     }
 }
