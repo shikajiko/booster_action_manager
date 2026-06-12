@@ -22,4 +22,4 @@ private:
 
 };
 
-} //namespace booster action mana
+} //namespace booster_action_manager

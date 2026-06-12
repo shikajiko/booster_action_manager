@@ -4,7 +4,7 @@ namespace booster_action_manager  // add this
 {
 
 ActionManagerNode::ActionManagerNode(rclcpp::Node::SharedPtr node)
-    : node(node)
+    : node(node)  
 {
     trajectory_client = std::make_shared<TrajectoryClient>(node);
 
@@ -23,8 +23,8 @@ void ActionManagerNode::handle_action_request(const action_interface::msg::RunAc
         ActionTrajectory action_to_play = action_manager.get_action_data_by_name(msg->action_name);
         trajectory_client->send_goal(action_to_play);
     } else {
-        ActionTrajectory action_to_play = parser.parse_string_json(msg->json_data);
-        trajectory_client->send_goal(action_to_play);
+        // ActionTrajectory action_to_play = action_manager.parse_string_json(msg->json_data);
+        // trajectory_client->send_goal(action_to_play);
     }
 }
 

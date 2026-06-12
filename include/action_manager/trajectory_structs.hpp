@@ -1,3 +1,6 @@
+#ifndef BOOSTER_ACTION_MANAGER_TRAJECTORY_STRUCTS_HPP
+#define BOOSTER_ACTION_MANAGER_TRAJECTORY_STRUCTS_HPP
+
 #include <string>
 #include <vector>
 
@@ -23,3 +26,5 @@ struct ActionTrajectory {
 };
 
 } // namespace booster_action_manager
+
+#endif

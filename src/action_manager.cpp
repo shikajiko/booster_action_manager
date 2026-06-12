@@ -18,7 +18,7 @@ void ActionManager::load_all_actions(const std::string & path)
     action_list = parser.get_action_list_from_dir(path);
 }
 
-ActionTrajectory get_action_data_from_json(const std::string & json_string) 
+ActionTrajectory ActionManager::get_action_data_from_json(const std::string & json_string) 
 {
     return parser.parse_string_json(json_string);
 }

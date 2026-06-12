@@ -11,7 +11,7 @@ TrajectoryClient::TrajectoryClient(rclcpp::Node::SharedPtr node)
         "controller/run_trajectory");
 }
 
-void TrajectoryClient::send_goal(ActionTrajectory & action)
+void TrajectoryClient::send_goal(const ActionTrajectory & action)
 {
     if (!client->wait_for_action_server(std::chrono::seconds(5))) {
         RCLCPP_ERROR(node->get_logger(), "Action server not available");
@@ -20,13 +20,10 @@ void TrajectoryClient::send_goal(ActionTrajectory & action)
 
     auto goal_msg = ActionTrajectoryRos::Goal();
     goal_msg.trajectory.joint_names = action.trajectory.joint_names;
-
-    double total_running_time = 0.0;
+    
     for (const auto & point : action.trajectory.points) {  
-        trajectory_msgs::msg::JointTrajectoryPoint ros_point;
+        action_interface::msg::JointTrajectoryPoint ros_point; ros_point;
         ros_point.positions = point.positions;
-        ros_point.velocities = point.velocities;
-        total_running_time += point.duration_seconds;
         ros_point.duration_seconds = point.duration_seconds;
         ros_point.delay_before_seconds = point.delay_before_seconds;
         goal_msg.trajectory.points.push_back(ros_point);

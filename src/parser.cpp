@@ -55,8 +55,8 @@ ActionTrajectory Parser::parse_string_json(const std::string & action_json)
 
 ActionTrajectory Parser::parse_action_json(const nlohmann::json & action_data, const std::string & action_name)
 {
-    constexpr double kDegToRad = std::numbers::pi / 180.0;
-
+    constexpr double kDegToRad = M_PI / 180.0; 
+    
     ActionTrajectory new_action;
     new_action.action_name = action_name;
     new_action.play_in_mode = action_data["play_in_mode"].get<std::string>();
