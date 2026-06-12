@@ -7,7 +7,6 @@
 namespace booster_action_manager 
 {
 
-
 namespace Joint = booster_model::Joint;
 
 class Parser

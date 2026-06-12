@@ -1,6 +1,9 @@
 #include "action_manager/parser.hpp"
 #include <numbers>
 
+namespace booster_action_manager 
+{
+
 std::map<std::string, ActionTrajectory> Parser::get_action_list_from_dir(const std::string & path) 
 {
     std::map<std::string, ActionTrajectory> action_list; 
@@ -88,3 +91,5 @@ ActionTrajectory Parser::parse_action_json(const nlohmann::json & action_data, c
 
     return new_action;
 }
+
+} // namespace booster_action_manager

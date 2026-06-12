@@ -1,6 +1,8 @@
 #include <string>
 #include <vector>
 
+namespace booster_action_manager 
+{
 struct TrajectoryPoint {
     std::vector<double> positions;
     std::vector<double> velocities;
@@ -19,3 +21,5 @@ struct ActionTrajectory {
     std::string next_mode;
     Trajectory trajectory;
 };
+
+} // namespace booster_action_manager

@@ -23,4 +23,4 @@ ActionTrajectory get_action_data_from_json(const std::string & json_string)
     return parser.parse_string_json(json_string);
 }
 
-}
+} // namespace booster_action_manager
