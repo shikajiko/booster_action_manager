@@ -1,4 +1,5 @@
 #include "action_manager/parser.hpp"
+#include <numbers>
 
 std::map<std::string, ActionTrajectory> Parser::get_action_list_from_dir(const std::string & path) 
 {
@@ -51,6 +52,8 @@ ActionTrajectory Parser::parse_string_json(const std::string & action_json)
 
 ActionTrajectory Parser::parse_action_json(const nlohmann::json & action_data, const std::string & action_name)
 {
+    constexpr double kDegToRad = std::numbers::pi / 180.0;
+
     ActionTrajectory new_action;
     new_action.action_name = action_name;
     new_action.play_in_mode = action_data["play_in_mode"].get<std::string>();
@@ -63,22 +66,16 @@ ActionTrajectory Parser::parse_action_json(const nlohmann::json & action_data, c
     }
     new_action.trajectory.joint_names = joint_names;
 
-    double accumulated_time = 0.0;
-
     for (const auto & pose : action_data["poses"]) {
-        accumulated_time += pose["time"].get<double>();
-
         std::vector<double> positions;
         positions.reserve(Joint::kJointCnt);
         for (const auto & joint_index : Joint::kAllJoints) {
             const std::string joint_name = std::string(Joint::kJointNames.at(joint_index));
-            positions.push_back(pose["joints"].value(joint_name, 0.0));
+            const double deg = pose["joints"].value(joint_name, 0.0);
+            positions.push_back(deg * kDegToRad);
         }
 
         std::vector<double> velocities(Joint::kJointCnt, 0.0);
-
-        int32_t sec = static_cast<int32_t>(accumulated_time);
-        uint32_t nanosec = static_cast<uint32_t>((accumulated_time - sec) * 1e9);
 
         TrajectoryPoint point;
         point.positions = positions;

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(action_manager)
+project(booster_action_manager)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -7,9 +7,44 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(booster_model REQUIRED)
+find_package(booster_interface REQUIRED)
+find_package(action_interface REQUIRED)
+
+
+add_library(${PROJECT_NAME}_lib
+  src/node/action_manager_node.cpp
+  src/action_manager.cpp 
+  src/parser.cpp 
+  src/trajectory_client.cpp 
+ )
+
+target_include_directories(${PROJECT_NAME}_lib PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+ament_target_dependencies(${PROJECT_NAME}_lib
+  rclcpp
+  rclcpp_action
+  booster_model
+  booster_interface
+  action_interface
+)
+
+add_executable(main src/main.cpp)
+target_link_libraries(main ${PROJECT_NAME}_lib)
+ament_target_dependencies(
+  main
+  rclcpp
+  rclcpp_action
+  booster_model
+  booster_interface
+  action_interface
+)
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

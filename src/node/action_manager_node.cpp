@@ -1,21 +1,4 @@
-#include "rclcpp/rclcpp.hpp"
-#include "action_manager/action_manager.hpp"
-#include "action_interface/msg/run_action.hpp"
-#include "action_manager/trajectory_client.hpp"
-#include "action_manager/trajectory_structs.hpp"
-
-class ActionManagerNode 
-{
-public:
-    explicit ActionManagerNode(rclcpp::Node SharedPtr & node);
-    void handle_action_request(const action_interface::msg::RunAction & msg);
-
-private:
-    rclcpp::Node::SharedPtr node;
-    rclcpp::Subscription<action_interface::msg::RunAction> run_action_subscriber;
-    ActionManager action_manager;
-    std::shared_ptr<TrajectoryClient> trajectory_client;
-}
+#include "action_manager/node/action_manager_node.hpp"
 
 ActionManagerNode::ActionManagerNode(rclcpp::Node SharedPtr & node) : node();
 {
@@ -31,7 +14,8 @@ ActionManagerNode::ActionManagerNode(rclcpp::Node SharedPtr & node) : node();
 ActionManagerNode::handle_action_request(const action_interface::msg::RunAction & msg) 
 {
     if (msg->json_data.empty()) {
-        // TO DO: get the correct action data from action manager 
+        ActionTrajectory action_to_play = action_manager.get_action_data_by_name(msg->action_name);
+        trajectory_client->send_goal(action_to_play);
         // TO DO: call send_goal with the obtained action data
     } else {
         // TO DO: convert json data into action data
