@@ -19,11 +19,14 @@ ActionManagerNode::ActionManagerNode(rclcpp::Node::SharedPtr node)
 
 void ActionManagerNode::handle_action_request(const action_interface::msg::RunAction::SharedPtr msg)
 {
+    ActionTrajectory action_to_play;
+    ControlType control_type;
+    
     if (msg->json_data.empty()) {
-        ActionTrajectory action_to_play = action_manager.get_action_data_by_name(msg->action_name);
+        action_to_play = action_manager.get_action_data_by_name(msg->action_name, control_type);
         trajectory_client->send_goal(action_to_play);
     } else {
-        // ActionTrajectory action_to_play = action_manager.parse_string_json(msg->json_data);
+        action_to_play = action_manager.parse_string_json(msg->json_data, control_type);
         // trajectory_client->send_goal(action_to_play);
     }
 }

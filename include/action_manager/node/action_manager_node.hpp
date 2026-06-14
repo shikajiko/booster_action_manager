@@ -6,6 +6,7 @@
 #include "action_interface/msg/run_action.hpp"
 #include "action_manager/trajectory_client.hpp"
 #include "action_manager/trajectory_structs.hpp"
+#include "action_manager/control_enum.hpp"
 
 namespace booster_action_manager 
 {

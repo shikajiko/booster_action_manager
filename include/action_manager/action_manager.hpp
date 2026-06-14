@@ -12,7 +12,7 @@ class ActionManager
 public:
     void load_all_actions(const std::string & path);
     ActionTrajectory get_action_data_by_name(const std::string & action_name, ControlType& control_type); 
-    ActionTrajectory get_action_data_from_json(const std::string & json_string);
+    ActionTrajectory get_action_data_from_json(const std::string & json_string, ControlType& control_type);
     std::vector<std::string> get_action_name_list();
 
 private:

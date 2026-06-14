@@ -10,9 +10,6 @@ ActionTrajectory ActionManager::get_action_data_by_name(const std::string & acti
     return action_list[action_name];
 }
 
-
-
-
 std::vector<std::string> ActionManager::get_action_name_list()
 {
     return action_name_list;
@@ -23,9 +20,11 @@ void ActionManager::load_all_actions(const std::string & path)
     action_list = parser.get_action_list_from_dir(path);
 }
 
-ActionTrajectory ActionManager::get_action_data_from_json(const std::string & json_string) 
+ActionTrajectory ActionManager::get_action_data_from_json(const std::string & json_string, ControlType& control_type) 
 {
-    return parser.parse_string_json(json_string);
+    auto data = parser.parse_string_json(json_string);
+    control_type = data.control_type;
+    return data;
 }
 
 } // namespace booster_action_manager
