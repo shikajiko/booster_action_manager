@@ -59,7 +59,8 @@ ActionTrajectory Parser::parse_action_json(const nlohmann::json & action_data, c
     
     ActionTrajectory new_action;
     new_action.action_name = action_name;
-    new_action.play_in_mode = action_data["play_in_mode"].get<std::string>();
+    std::string control_type = action_data["control_type"].get<std::string>();
+    new_action.control_type = string_to_control_type(action_data["control_type"].get<std::string>());
     new_action.next_mode = action_data["next"].get<std::string>();
 
     std::vector<std::string> joint_names;
@@ -90,6 +91,18 @@ ActionTrajectory Parser::parse_action_json(const nlohmann::json & action_data, c
     }
 
     return new_action;
+}
+
+ControlType Parser::string_to_control_type(const std::string& str)
+{
+    if (str == "upper_body")
+        return ControlType::UPPER_BODY;
+
+    if (str == "full_body")
+        return ControlType::FULL_BODY;
+
+    throw std::runtime_error(
+        "Unknown control_type: " + str);
 }
 
 } // namespace booster_action_manager

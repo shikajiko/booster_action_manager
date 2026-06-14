@@ -1,12 +1,17 @@
 #include "action_manager/action_manager.hpp"
+#include "action_manager/control_enum.hpp"
 
 namespace booster_action_manager {
 
 
-ActionTrajectory ActionManager::get_action_data_by_name(const std::string & action_name) 
+ActionTrajectory ActionManager::get_action_data_by_name(const std::string & action_name, ControlType& control_type) 
 {
+    control_type = action_list[action_name].control_type;
     return action_list[action_name];
 }
+
+
+
 
 std::vector<std::string> ActionManager::get_action_name_list()
 {

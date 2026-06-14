@@ -11,7 +11,7 @@ class ActionManager
 
 public:
     void load_all_actions(const std::string & path);
-    ActionTrajectory get_action_data_by_name(const std::string & action_name);
+    ActionTrajectory get_action_data_by_name(const std::string & action_name, ControlType& control_type); 
     ActionTrajectory get_action_data_from_json(const std::string & json_string);
     std::vector<std::string> get_action_name_list();
 

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include "action_manager/control_enum.hpp"
 
 namespace booster_action_manager 
 {
@@ -20,7 +21,7 @@ struct Trajectory {
 
 struct ActionTrajectory {
     std::string action_name;
-    std::string play_in_mode;
+    ControlType control_type;
     std::string next_mode;
     Trajectory trajectory;
 };
