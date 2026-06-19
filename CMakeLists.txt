@@ -38,6 +38,7 @@ ament_target_dependencies(${PROJECT_NAME}_lib
 )
 
 add_executable(main src/main.cpp)
+
 target_link_libraries(main ${PROJECT_NAME}_lib)
 ament_target_dependencies(
   main
@@ -47,6 +48,11 @@ ament_target_dependencies(
   booster_interface
   action_interface
   booster_client_interface
+)
+
+install(TARGETS
+  main
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)
