@@ -22,7 +22,7 @@ void TrajectoryClient::send_goal(const ActionTrajectory & action)
     goal_msg.trajectory.joint_names = action.trajectory.joint_names;
     
     for (const auto & point : action.trajectory.points) {  
-        action_interface::msg::JointTrajectoryPoint ros_point; ros_point;
+        action_interface::msg::JointTrajectoryPoint ros_point; 
         ros_point.positions = point.positions;
         ros_point.duration_seconds = point.duration_seconds;
         ros_point.delay_before_seconds = point.delay_before_seconds;

@@ -13,7 +13,7 @@ std::map<std::string, ActionTrajectory> Parser::get_action_list_from_dir(const s
         std::string file_name = entry.path();
         std::string extension_json = ".json";
 
-        for (int i = path.length(); i < file_name.length() - extension_json.length(); i++) {
+        for (size_t i = path.length(); i < file_name.length() - extension_json.length(); i++) {
             name += file_name[i];
         }
 

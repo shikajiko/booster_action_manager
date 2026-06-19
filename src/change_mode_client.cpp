@@ -1,100 +1,79 @@
-#include <algorithm>
-#include <array>
-#include <atomic>
-#include <cctype>
-#include <chrono>
-#include <cstdint>
-#include <iostream>
-#include <mutex>
-#include <optional>
-#include <sstream>
-#include <string>
-#include <thread>
-#include <vector>
+#include "action_manager/change_mode_client.hpp"
 
-#include "booster_client_interface/srv/set_mode.hpp"
-#include "booster_client_interface/srv/set_upper_control.hpp"
-#include "booster_interface/msg/robot_states_msg.hpp"
-#include "action_manager/control_enum.hpp"
-#include "booster_model/mode_enum.hpp"
-#include "rclcpp/rclcpp.hpp"
-
-namespace booster_action_manager 
+namespace booster_action_manager
 {
-
-using RobotMode = booster_model::mode::RobotMode;
 using UpperControl = booster_model::mode::UpperControl;
-using SetMode = booster_client_interface::srv::SetMode;
-using SetUpperControl = booster_client_interface::srv::SetUpperControl;
-using RobotState = booster_interface::msg::RobotStatesMsg;
-
-class ChangeModeClient
-{
-public:
-    explicit ChangeModeClient(rclcpp::Node::SharedPtr node);
-    void switch_to_target_mode(const ControlType & control_type);
-    void update_robot_state(RobotState::SharedPtr msg);
-
-private:
-    rclcpp::Node::SharedPtr node;
-    rclcpp::Client<SetMode>::SharedPtr mode_client;
-    rclcpp::Client<SetUpperControl>::SharedPtr upper_control_client;
-    rclcpp::Subscriber<RobotState>::SharedPtr robot_state_subscriber;
-
-    RobotMode current_mode;
-    UpperControl upc_status;
-}
 
 ChangeModeClient::ChangeModeClient(rclcpp::Node::SharedPtr node) : node(node)
 {
-    mode_client = create_client<SetMode>("client/set_mode");
-    upper_control_client = create_client<SetUpperControl>("client/set_upper_control");
-
-    robot_state_subscriber = 
-        node->create_subscriber<RobotState>(
+    mode_client = node->create_client<SetMode>("client/set_mode");
+    upper_control_client = node->create_client<SetUpperControl>("client/set_upper_control");
+    robot_state_subscriber =
+        node->create_subscription<RobotState>(
             "/robot_states",
             10,
-            [this](const RobotState::SharedPtr msg) 
+            [this](const RobotState::SharedPtr msg)
             {
                 this->update_robot_state(msg);
             }
-        )
+        );
 }
 
-ChangeModeClient::update_mode(RobotState::SharedPtr msg) 
+void ChangeModeClient::update_robot_state(RobotState::SharedPtr msg)
 {
-    this.current_mode = static_cast<RobotMode>(msg->current_mode);
-    this.upc_status = int_to_upper_control(msg->current_body_control);
+    current_mode = static_cast<RobotMode>(msg->current_mode);
+    upc_status = int_to_upper_control(msg->current_body_control);
 }
 
-ChangeModeClient::switch_to_correct_mode(const ControlType & control_type) 
+void ChangeModeClient::switch_to_target_mode(
+    const ControlType & control_type,
+    std::function<void(bool)> on_done)
 {
-    if (robot_state == RobotMode::CUSTOM) {
-        return;
-    }
-
-    switch (control_type)
-    {
-    case ControlType::UPPER_BODY:
-        // change to walk with upc on
-        /* code */
-        break;
-    
-    case ControlType::FULL_BODY:
-        // change to custom
-        break;
-
-    default:
-        break;
+    switch (control_type) {
+        case ControlType::UPPER_BODY: {
+            if (current_mode == RobotMode::WALK && upc_status == UpperControl::ON) {
+                on_done(true);
+                return;
+            }
+            auto req = std::make_shared<SetMode::Request>();
+            req->mode = static_cast<uint8_t>(RobotMode::WALK);
+            mode_client->async_send_request(req,
+                [this, on_done](rclcpp::Client<SetMode>::SharedFuture future) {
+                    if (!future.get()->success) { on_done(false); return; }
+                    auto upper_control_req = std::make_shared<SetUpperControl::Request>();
+                    upper_control_req->enable = true;
+                    upper_control_client->async_send_request(upper_control_req,
+                        [on_done](rclcpp::Client<SetUpperControl>::SharedFuture uc_future) {
+                            on_done(uc_future.get()->success);
+                        });
+                });
+            break;
+        }
+        case ControlType::FULL_BODY: {
+            if (current_mode == RobotMode::CUSTOM) {
+                on_done(true);
+                return;
+            }
+            auto req = std::make_shared<SetMode::Request>();
+            req->mode = static_cast<uint8_t>(RobotMode::CUSTOM);
+            mode_client->async_send_request(req,
+                [on_done](rclcpp::Client<SetMode>::SharedFuture future) {
+                    on_done(future.get()->success);
+                });
+            break;
+        }
+        default:
+            on_done(true);
+            break;
     }
 }
 
-UpperControl ChangeModeClient::int_to_upper_control(const int & ctrl) 
+UpperControl ChangeModeClient::int_to_upper_control(const int & ctrl)
 {
     if (ctrl == 3) {
         return UpperControl::ON;
-    } 
-
+    }
     return UpperControl::OFF;
 }
+
 }

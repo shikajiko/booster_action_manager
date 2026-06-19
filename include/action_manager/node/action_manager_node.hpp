@@ -7,6 +7,7 @@
 #include "action_manager/trajectory_client.hpp"
 #include "action_manager/trajectory_structs.hpp"
 #include "action_manager/control_enum.hpp"
+#include "action_manager/change_mode_client.hpp"
 
 namespace booster_action_manager 
 {
@@ -22,6 +23,7 @@ private:
     rclcpp::Subscription<action_interface::msg::RunAction>::SharedPtr run_action_subscriber;
     ActionManager action_manager;
     std::shared_ptr<TrajectoryClient> trajectory_client;
+    std::shared_ptr<ChangeModeClient> change_mode_client;
 };
 
 } // namespace booster_action_manager  

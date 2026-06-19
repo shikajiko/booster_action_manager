@@ -11,6 +11,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(booster_model REQUIRED)
 find_package(booster_interface REQUIRED)
+find_package(booster_client_interface REQUIRED)
 find_package(action_interface REQUIRED)
 
 
@@ -19,6 +20,7 @@ add_library(${PROJECT_NAME}_lib
   src/action_manager.cpp 
   src/parser.cpp 
   src/trajectory_client.cpp 
+  src/change_mode_client.cpp
  )
 
 target_include_directories(${PROJECT_NAME}_lib PUBLIC
@@ -32,6 +34,7 @@ ament_target_dependencies(${PROJECT_NAME}_lib
   booster_model
   booster_interface
   action_interface
+  booster_client_interface
 )
 
 add_executable(main src/main.cpp)
@@ -43,6 +46,7 @@ ament_target_dependencies(
   booster_model
   booster_interface
   action_interface
+  booster_client_interface
 )
 
 

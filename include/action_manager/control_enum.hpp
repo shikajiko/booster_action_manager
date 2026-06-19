@@ -1,3 +1,5 @@
+#pragma once  
+
 namespace booster_action_manager {
 
 enum class ControlType {
