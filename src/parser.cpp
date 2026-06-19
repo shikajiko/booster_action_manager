@@ -85,7 +85,7 @@ ActionTrajectory Parser::parse_action_json(const nlohmann::json & action_data, c
         point.positions = positions;
         point.velocities = velocities;
         point.delay_before_seconds = pose["delay_before"].get<double>();
-        point.duration_seconds = pose["duration_seconds"].get<double>();
+        point.duration_seconds = pose["duration"].get<double>();
 
         new_action.trajectory.points.push_back(point);
     }

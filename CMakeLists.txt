@@ -49,17 +49,30 @@ ament_target_dependencies(
   booster_client_interface
 )
 
-
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
+  find_package(ament_cmake_gtest REQUIRED)
+
   set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
+
+  ament_add_gtest(test_waving_flag_json
+    test/test_waving_flag_json.cpp
+  )
+
+  target_link_libraries(test_waving_flag_json
+    ${PROJECT_NAME}_lib
+  )
+
+  ament_target_dependencies(test_waving_flag_json
+    rclcpp
+    rclcpp_action
+    booster_model
+    booster_interface
+    action_interface
+    booster_client_interface
+  )
 endif()
 
 ament_package()
