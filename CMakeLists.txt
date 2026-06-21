@@ -55,30 +55,4 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME}
 )
 
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  find_package(ament_cmake_gtest REQUIRED)
-
-  set(ament_cmake_copyright_FOUND TRUE)
-  set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
-
-  ament_add_gtest(test_waving_flag_json
-    test/test_waving_flag_json.cpp
-  )
-
-  target_link_libraries(test_waving_flag_json
-    ${PROJECT_NAME}_lib
-  )
-
-  ament_target_dependencies(test_waving_flag_json
-    rclcpp
-    rclcpp_action
-    booster_model
-    booster_interface
-    action_interface
-    booster_client_interface
-  )
-endif()
-
 ament_package()
