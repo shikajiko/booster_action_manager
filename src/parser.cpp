@@ -41,12 +41,10 @@ ActionTrajectory Parser::parse_string_json(const std::string & action_json)
         if (parsed.empty() || !parsed.is_object()) {
             throw std::invalid_argument("JSON must be a non-empty object");
         }
-
+        
         auto it = parsed.begin();
-        const std::string action_name = it.key();
-        const nlohmann::json & action_data = it.value();
-
-        return parse_action_json(action_data, action_name);
+        const std::string action_name = parsed.value("name", "unknown");
+        return parse_action_json(parsed, action_name);
 
     } catch (const nlohmann::json::parse_error & e) {
         throw std::invalid_argument(std::string("Invalid JSON string: ") + e.what());
